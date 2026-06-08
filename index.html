@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang='de'>
+<head>
+<meta charset='UTF-8'>
+<title>PRINCE2 Lern-App</title>
+<style>
+body { font-family: Arial; padding: 20px; background:#f4f6f8;}
+.card{background:white;padding:20px;border-radius:10px;max-width:700px;margin:auto;}
+button{margin-top:10px;padding:10px;border:none;border-radius:5px;background:#0078d4;color:white;}
+.option{display:block;margin:5px 0;padding:10px;background:#eee;border-radius:5px;cursor:pointer;}
+</style>
+</head>
+<body>
+<div class='card'>
+<h2>📘 PRINCE2 Lern-App</h2>
+<div id='quiz'></div>
+<div id='controls'></div>
+</div>
+<script>
+const allQuestions = Array.from({length:200}, (_,i)=>({
+ q:`Frage ${i+1}: Beispiel basierend auf PRINCE2`,
+ a:["Antwort A","Antwort B","Antwort C","Antwort D"],
+ correct: Math.floor(Math.random()*4)
+}));
+let currentSet=[], index=0, wrong=[];
+function startSet(source){
+ currentSet = source.slice(0,10);
+ index=0; wrong=[]; showQuestion();
+}
+function showQuestion(){
+ let q=currentSet[index];
+ document.getElementById('quiz').innerHTML = `<h3>Frage ${index+1}/10</h3>${q.q}` +
+ q.a.map((opt,i)=>`<div class='option' onclick='answer(${i})'>${opt}</div>`).join('');
+}
+function answer(i){ if(i!==currentSet[index].correct) wrong.push(currentSet[index]); index++; index<10?showQuestion():endSet(); }
+function endSet(){
+ document.getElementById('quiz').innerHTML = `<h3>Einheit beendet</h3><p>Fehler: ${wrong.length}</p>`;
+ document.getElementById('controls').innerHTML = `
+ <button onclick='startSet(wrong)'>❌ Fehler</button>
+ <button onclick='startSet(allQuestions)'>🔁 Alle</button>`;
+}
+startSet(allQuestions);
+</script>
+</body>
+</html>
